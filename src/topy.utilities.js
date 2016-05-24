@@ -7,7 +7,7 @@
  *------------------------------------------------------------------------------------*/
 
 function log(msg) {
-	controlPanel.log(msg);
+	console.log(msg);
 }
 
 /*
@@ -40,4 +40,42 @@ function loadStl(data) {
 	// store the object
 	objects.push(object);
 
+}
+
+function callTopy(topyPath, tpdPath) {
+	pingServer('localhost', '9999', ['tpd'], [topyPath]);
+}
+
+
+/*
+	setting up http request sender
+*/
+var xmlhttp = new XMLHttpRequest();
+xmlhttp.onreadystatechange = function() {
+	if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
+		log(xmlhttp.responseText);
+	}
+}
+
+/*
+	actually sending web sockets to ping the improv server
+*/
+function pingServer(host, port, keys, values) {
+	var prefix = "http://";
+	xmlhttp.open("POST", prefix + host + ":" + port, true);
+	xmlhttp.setRequestHeader("Content-type", "text/html");
+	xmlhttp.timeout = 3000;
+
+	var strMsg = '?';
+	if (keys == undefined || values == undefined) {
+		xmlhttp.send();
+	} else {
+		for (var i = 0; i < keys.length; i++) {
+			strMsg += keys[i] + '=' + values[i];
+			if (i < keys.length - 1) {
+				strMsg += '&';
+			}
+		}
+		xmlhttp.send(strMsg);
+	}
 }

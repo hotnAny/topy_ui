@@ -44,6 +44,9 @@ var initPanel = function() {
 	}
 
 	btnRun.button();
+	btnRun.click(function(e){
+		callTopy();
+	});
 }
 
 initPanel();

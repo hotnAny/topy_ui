@@ -40,6 +40,11 @@ panel.append(tblInfo);
 
 
 //
+// TODO: convergence conditions
+//
+
+
+//
 // specify elements, boundary and load
 //
 var tblAxes = $('<table class="ui-widget"></table>');
