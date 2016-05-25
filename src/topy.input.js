@@ -24,48 +24,54 @@ function onMouseDown(e) {
 		return;
 	}
 
-	var objs = rayCast(e.clientX, e.clientY, gVoxels);
-	if (objs.length > 0) {
-		gSelGlued = !gSelGlued;
-	}
+	gMouseDown = true;
+	gGlueState = selectVoxel(e);
 }
 
 function onMouseMove(e) {
-	if (gSelGlued) {
-		var objs = rayCast(e.clientX, e.clientY, gVoxels);
-		// console.log(objs[0]);
-		if (objs.length > 0) {
-			var voxel = objs[0].object;
-
-			setHighlight(voxel);
-		}
+	if (gMouseDown) {
+		selectVoxel(e, gGlueState);
 	}
 }
 
 function onMouseUp(e) {
-
+	gMouseDown = false;
 }
 
-function setHighlight(mesh, toHighlight) {
-	// if(mesh.highlighted) {
-	// 	log('dehighlight')
-	// 	mesh.highlighted = false;
-	// } else {
-	// 	log('highlight')
-	// 	mesh.highlighted = true;
-	// }
+function selectVoxel(e, alwaysHighlight) {
+	var objs = rayCast(e.clientX, e.clientY, gVoxels);
+	if (objs.length > 0) {
+		var voxel = objs[0].object;
+		if (setHighlight(voxel, alwaysHighlight)) {
+			if (isVoxelSelected(voxel.index) == false) {
+				gSelVoxels.push(voxel.index);
+			}
+			return true;
+		}
+	}
+	return false;
+}
 
-	// log(mesh.index)
+function setHighlight(mesh, alwaysHighlight) {
+
+	var toHighlight = alwaysHighlight == undefined ? !mesh.highlighted : alwaysHighlight;
+
+	// if (mesh.highlighted || alwaysHighlight == false) {
 	if (toHighlight) {
 		if (mesh.material != MATERIALCONTRAST) {
 			mesh.material = MATERIALCONTRAST;
 			mesh.material.needsUpdate = true;
 		}
+		mesh.highlighted = true;
+		return true;
+		// } else if (!mesh.highlighted || alwaysHighlight == true) {
 	} else {
 		if (mesh.material != MATERIALNORMAL) {
 			mesh.material = MATERIALNORMAL;
 			mesh.material.needsUpdate = true;
 		}
+		mesh.highlighted = false;
+		return false;
 	}
 
 }

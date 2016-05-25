@@ -18,14 +18,14 @@ var COLORCONTRAST = 0xD1D6E7; // is the contrast of the COLORNORMAL
 
 var WIDTHPANEL = 388;
 
-var MATERIALNORMAL = new THREE.MeshPhongMaterial({
+var MATERIALNORMAL = new THREE.MeshBasicMaterial({
      color: COLORNORMAL,
      transparent: true,
      opacity: 0.25
 });
 
 
-var MATERIALCONTRAST = new THREE.MeshPhongMaterial({
+var MATERIALCONTRAST = new THREE.MeshBasicMaterial({
      color: COLORCONTRAST,
      transparent: true,
      opacity: 0.75

@@ -20,6 +20,7 @@ var gVoxels = [];
 var gDimsVoxels = []; // the existing dimension of the voxel grid
 
 // mouse selection
-var gSelGlued = false; // glue state for continuous selection
+var gMouseDown = false;
+var gGlueState = false; // glue state for constantly selecting or deselecting voxels when dragging
 var gSelVoxels = []; // temporary buffer for selected voxels
 var gVoxelPrev; // last encountered voxel

@@ -25,9 +25,10 @@ function updateVoxels(nElms) {
 			for (var k = 0; k < nz; k++) {
 				idx = i * (ny * nz) + j * nz + k;
 				if (i == nx - 1 || i == 0 || j == ny - 1 || j == 0 || k == nz - 1 || k == 0) {
-					var voxel = makeVoxel(DIMVOXEL, -i, j, k, MATERIALNORMAL);
-					voxel.index = [i, j, k];
-
+					var index = [i, j, k];
+					var mat = isVoxelSelected(index) ? MATERIALCONTRAST : MATERIALNORMAL;
+					var voxel = makeVoxel(DIMVOXEL, -i, j, k, mat);
+					voxel.index = index;
 					scene.add(voxel)
 
 					gVoxels.push(voxel);
@@ -49,7 +50,7 @@ function updateVoxels(nElms) {
 //	@param	dim: the size of the voxel
 //	@param	noMargin: set to true if wanting voxels to be right next to one another with no margin
 //
-function makeVoxel(dim, i, j, k, noMargin) {
+function makeVoxel(dim, i, j, k, mat, noMargin) {
 	var geometry = new THREE.BoxGeometry(dim, dim, dim);
 	var material = new THREE.MeshBasicMaterial({
 		color: COLORNORMAL,
@@ -57,7 +58,7 @@ function makeVoxel(dim, i, j, k, noMargin) {
 		opacity: 0.25,
 		// wireframe: true
 	});
-	var voxel = new THREE.Mesh(geometry, material);
+	var voxel = new THREE.Mesh(geometry, mat);
 
 	// leave some margin between voxels
 	if (noMargin) {} else {
@@ -67,4 +68,22 @@ function makeVoxel(dim, i, j, k, noMargin) {
 	voxel.position.set((i + 0.5) * dim, (j + 0.5) * dim, (k + 0.5) * dim);
 
 	return voxel;
+}
+
+function isVoxelSelected(index) {
+	for (var i = 0; i < gSelVoxels.length; i++) {
+		var isMatch = true;
+		for (var j = 0; j < index.length; j++) {
+			if(index[j] != gSelVoxels[i][j]) {
+				isMatch = false;
+				break;
+			}
+		}
+
+		if(isMatch) {
+			return true;
+		}
+	}
+
+	return false;
 }
