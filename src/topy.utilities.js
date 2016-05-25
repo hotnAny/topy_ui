@@ -79,3 +79,15 @@ function pingServer(host, port, keys, values) {
 		xmlhttp.send(strMsg);
 	}
 }
+
+function float2int(value) {
+	return value | 0;
+}
+
+function getValuesFromArray(array) {
+	var values = [];
+	Object.keys(array).forEach(function(key) {
+		values.push(array[key]);
+	});
+	return values;
+}

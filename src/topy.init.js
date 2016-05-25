@@ -1,6 +1,6 @@
 /*------------------------------------------------------------------------------------*
  *
- * variable declaration and program initialization
+ * variable (generic) declaration and program initialization
  * 
  * by xiang 'anthony' chen, xiangchen@acm.org
  *
@@ -21,9 +21,15 @@ var WIDTHPANEL = 388;
 var MATERIALNORMAL = new THREE.MeshPhongMaterial({
      color: COLORNORMAL,
      transparent: true,
-     opacity: 0.75
+     opacity: 0.25
 });
 
+
+var MATERIALCONTRAST = new THREE.MeshPhongMaterial({
+     color: COLORCONTRAST,
+     transparent: true,
+     opacity: 0.75
+});
 
 //
 // rendering and viewport
@@ -38,10 +44,10 @@ var scene = new THREE.Scene();
 var objects = new Array();
 
 var camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 1, 10000);
-var gPosCam = new THREE.Vector3(-16, 8, 10);
-camera.position.copy(gPosCam.clone().multiplyScalar(50));
+var gPosCam = new THREE.Vector3(-4, 2.5, 3);
+camera.position.copy(gPosCam.clone().multiplyScalar(65));
 
-var gLookAt = new THREE.Vector3(-25, 0, -0).multiplyScalar(10);
+var gLookAt = new THREE.Vector3(-2, 0, -5).multiplyScalar(10);
 var gMouseCtrls = new THREE.TrackballControls(camera, undefined, gLookAt);
 var gWheelDisabled = false;
 

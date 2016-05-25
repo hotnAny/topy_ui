@@ -53,9 +53,9 @@ var axes = ['Z', 'Y', 'X'];
 for (var i = axes.length - 1; i >= 0; i--) {
 	var trAxis = $('<tr></tr>');
 	trAxis.append($('<td style="padding: 5px">' + axes[i] + '</td>'));
-	trAxis.append($('<td style="padding: 5px"><input type="text" id="nElm"' + axes[i] + ' size="3"></td>'));
-	trAxis.append($('<td width="256px" style="padding: 5px"><div id="sldr' + axes[i] + '""></div></td>'));
-	trAxis.append($('<td style="padding: 5px"><label id="layer"' + axes[i] + ' ></label></td>'));
+	trAxis.append($('<td style="padding: 5px"><input type="text" id="nElm' + axes[i] + '" size="3"></td>'));
+	trAxis.append($('<td width="256px" style="padding: 5px"><div id="sldr' + axes[i] + '"></div></td>'));
+	trAxis.append($('<td style="padding: 5px"><label id="layer' + axes[i] + '" ></label></td>'));
 	tblAxes.append(trAxis);
 }
 panel.append(tblAxes);
