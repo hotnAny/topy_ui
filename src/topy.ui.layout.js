@@ -60,6 +60,38 @@ for (var i = axes.length - 1; i >= 0; i--) {
 }
 panel.append(tblAxes);
 
+//
+//	dialog for specifying boundary and load
+//
+var dlgBoundLoad = $('<div></div>');
+dlgBoundLoad.title = 'Boundary and Load';
+dlgBoundLoad.append('');
+
+var tblBoundLoad = $('<table class="ui-widget" cellspacing="2" cellpadding="2"></table>');
+dlgBoundLoad.append(tblBoundLoad);
+
+var trBound = $('<tr></tr>');
+trBound.append($('<td>Boundary: </td>'));
+for (var i = axes.length - 1; i >= 0; i--) {
+	trBound.append($('<td style="padding: 5px">' + axes[i] + '</td>'));
+	trBound.append($('<td style="padding: 5px"><input type="checkbox" id="cb' + axes[i] + '"></td>'));
+}
+tblBoundLoad.append(trBound);
+
+var trLoad = $('<tr></tr>');
+trLoad.append($('<td>Load: </td>'));
+for (var i = axes.length - 1; i >= 0; i--) {
+	trLoad.append($('<td style="padding: 5px">' + axes[i] + '</td>'));
+	trLoad.append($('<td style="padding: 5px"><input type="text" id="load' + axes[i] + '" size="3"></td>'));
+}
+tblBoundLoad.append(trLoad);
+
+dlgBoundLoad.append($('<br>'));
+
+var btnOk = $('<div style="float: right;">OK</div>');
+dlgBoundLoad.append(btnOk);
+
+$(document.body).append(dlgBoundLoad);
 
 //
 //	finish-up buttons

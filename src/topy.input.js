@@ -20,7 +20,7 @@ document.addEventListener('mousemove', onMouseMove, false);
 document.addEventListener('mouseup', onMouseUp, false);
 
 function onMouseDown(e) {
-	if (e.which != LEFTMOUSE) {
+	if (e.which != LEFTMOUSE || dlgBoundLoad.dialog('isOpen') == true) {
 		return;
 	}
 
@@ -35,6 +35,10 @@ function onMouseMove(e) {
 }
 
 function onMouseUp(e) {
+	if(gGlueState) {	// if it's a selection operation
+		// show prompt
+		dlgBoundLoad.dialog('open');
+	}
 	gMouseDown = false;
 }
 

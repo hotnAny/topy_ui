@@ -80,11 +80,42 @@ var initPanel = function() {
 		// set initial voxel grid dimensions
 		$('#nElm' + axes[i]).val(10);
 		$('#nElm' + axes[i]).trigger('input')
+
+		//
+		// prompt for specifying load/boundary
+		//
+		dlgBoundLoad.dialog({
+			autoOpen: false,
+			maxWidth: 280,
+			maxHeight: 160,
+			width: 280,
+			height: 160,
+			show: {
+				effect: "fade",
+				duration: 500
+			},
+			hide: {
+				effect: "fade",
+				duration: 500
+			},
+			position: {
+				my: "right middle",
+				at: "right-25 top+160",
+				of: window
+			}
+		});
+		// dlgBoundLoad.dialog('option', 'position', [1024, 256]);
+
+		btnOk.button();
+		btnOk.click(function(e) {
+			dlgBoundLoad.dialog('close');
+		});
 	}
 
 	btnRun.button();
 	btnRun.click(function(e) {
 		// callTopy();
+		dlgBoundLoad.dialog('open');
 	});
 }
 

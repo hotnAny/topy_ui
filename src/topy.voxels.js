@@ -19,28 +19,41 @@ function updateVoxels(nElms) {
 
 	gVoxels.splice(0, gVoxels.length);
 
+	//
+	// rendering the general voxels
+	//
 	var idx = 0;
 	for (var i = 0; i < nx; i++) {
 		for (var j = 0; j < ny; j++) {
 			for (var k = 0; k < nz; k++) {
-				idx = i * (ny * nz) + j * nz + k;
-				if (i == nx - 1 || i == 0 || j == ny - 1 || j == 0 || k == nz - 1 || k == 0) {
-					var index = [i, j, k];
-					var mat = isVoxelSelected(index) ? MATERIALCONTRAST : MATERIALNORMAL;
-					var voxel = makeVoxel(DIMVOXEL, -i, j, k, mat);
-					voxel.index = index;
-					scene.add(voxel)
+				var index = [i, j, k];
+				if(isVoxelSelected(index)) {
+					continue;
+				}
 
+				idx = i * (ny * nz) + j * nz + k;
+
+				if (i == nx - 1 || i == 0 || j == ny - 1 || j == 0 || k == nz - 1 || k == 0) {
+					// var mat = isVoxelSelected(index) ? MATERIALCONTRAST : MATERIALNORMAL;
+					var voxel = makeVoxel(DIMVOXEL, -i, j, k, MATERIALNORMAL, true);
+					voxel.index = index;
+					scene.add(voxel);
 					gVoxels.push(voxel);
 				}
 			} // z	
 		} // y
 	} // x
 
-
-	// gVoxels.splice(idx + 1, gVoxels.length - idx - 1);
-
-	// reinstate those that are selected as boundary and/or loads, if they are still valid
+	//
+	// render the selected voxels (load or boundary)
+	//
+	for (var i = 0; i < gSelVoxels.length; i++) {
+		var index = gSelVoxels[i];
+		var voxel = makeVoxel(DIMVOXEL, -index[0], index[1], index[2], MATERIALCONTRAST, true);
+		voxel.index = index;
+		scene.add(voxel);
+		gVoxels.push(voxel);
+	}
 }
 
 //

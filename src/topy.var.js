@@ -16,11 +16,15 @@ var gNumElms = new Array();
 // which layer is slided to
 var gIdxLayers = new Array();
 
+// voxels
 var gVoxels = [];
 var gDimsVoxels = []; // the existing dimension of the voxel grid
+var gBoundVoxels = [];
+var gLoadVoxels = [];
 
 // mouse selection
 var gMouseDown = false;
 var gGlueState = false; // glue state for constantly selecting or deselecting voxels when dragging
 var gSelVoxels = []; // temporary buffer for selected voxels
 var gVoxelPrev; // last encountered voxel
+var gIsSpecified;
