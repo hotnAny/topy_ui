@@ -91,3 +91,33 @@ function getValuesFromArray(array) {
 	});
 	return values;
 }
+
+function removeFromArray(array, elm, compFunc) {
+	// if (storage != undefined) {
+	// 	for (var i = 0; i < gVoxels.length; i++) {
+	// 		if (storage[i][0] == voxel.index[0] && storage[i][1] == voxel.index[1] && storage[i][2] == voxel.index[2]) {
+	// 			storage = storage.splice(i, 1);
+	// 		}
+	// 	}
+	// }
+
+	var toRemove = [];
+	for (var i = array.length - 1; i >= 0; i--) {
+		var equal = undefined;
+		if (compFunc != undefined) {
+			equal = compFunc(elm, array[i]);
+		} else {
+			equal = elm == array[i];
+		}
+
+		if (equal) {
+			toRemove.push(i);
+		}
+	}
+
+	for (var i = toRemove.length - 1; i >= 0; i--) {
+		array.splice(toRemove[i], 1);
+	}
+
+	return array;
+}

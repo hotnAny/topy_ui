@@ -48,7 +48,7 @@ function updateVoxels(nElms) {
 	// render the selected voxels (load or boundary)
 	//
 	for (var i = 0; i < gSelVoxels.length; i++) {
-		var index = gSelVoxels[i];
+		var index = gSelVoxels[i].index;
 		var voxel = makeVoxel(DIMVOXEL, -index[0], index[1], index[2], MATERIALCONTRAST, true);
 		voxel.index = index;
 		scene.add(voxel);
@@ -83,20 +83,3 @@ function makeVoxel(dim, i, j, k, mat, noMargin) {
 	return voxel;
 }
 
-function isVoxelSelected(index) {
-	for (var i = 0; i < gSelVoxels.length; i++) {
-		var isMatch = true;
-		for (var j = 0; j < index.length; j++) {
-			if(index[j] != gSelVoxels[i][j]) {
-				isMatch = false;
-				break;
-			}
-		}
-
-		if(isMatch) {
-			return true;
-		}
-	}
-
-	return false;
-}

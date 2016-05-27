@@ -10,6 +10,8 @@ $(document.body).append(panel);
 
 var initPanel = function() {
 
+	unitTest();
+
 	for (var i = axes.length - 1; i >= 0; i--) {
 		//
 		// slider behavior
@@ -108,6 +110,44 @@ var initPanel = function() {
 
 		btnOk.button();
 		btnOk.click(function(e) {
+			for (var i = gSelVoxels.length - 1; i >= 0; i--) {
+				var voxel = gSelVoxels[i];
+				log(voxel)
+
+				// check if it is a boundary
+				// voxel.isBoundary = false;
+				for (var j = axes.length - 1; j >= 0; j--) {
+					if ($('#cb' + axes[j]).is(':checked')) {
+						// voxel.isBoundary = true;
+						// if (voxel.fxtr == undefined) {
+						// 	voxel.fxtr = [];
+						// }
+						// voxel.fxtr[axes[j]] = voxel.index;
+						voxel.setBoundary(axes[j]);
+					}
+				}
+				log(voxel.fxtr);
+
+				// check if it is a load point
+				// voxel.isLoad = false;
+				for (var j = axes.length - 1; j >= 0; j--) {
+					try {
+						var load = parseFloat($('#load' + axes[j]).val());
+						if (isNaN(load) == false) {
+							// voxel.isLoad = true;
+							// if (voxel.load == undefined) {
+							// 	voxel.load = [];
+							// }
+							// voxel.load[axes[j]] = load;
+							voxel.setLoad(axes[j], load)
+						}
+					} catch (e) {
+
+					}
+				}
+				log(voxel.loads);
+			}
+
 			dlgBoundLoad.dialog('close');
 		});
 	}
@@ -119,4 +159,6 @@ var initPanel = function() {
 	});
 }
 
-initPanel();
+$(document).ready(function() {
+	initPanel();
+});
