@@ -1,0 +1,50 @@
+[ToPy Problem Definition File v2007]
+
+#
+# experiment of one stick connector optimization
+# by xiang 'anthnony' chen, 2016
+#
+
+PROB_TYPE  : comp #  minimum compliance problem
+PROB_NAME  : single_stick
+
+ETA:         0.4
+DOF_PN:      3
+VOL_FRAC:    0.30
+FILT_RAD:    1.5
+ELEM_K:      H8
+
+NUM_ELEM_X : 10
+NUM_ELEM_Y : 19
+NUM_ELEM_Z : 19
+
+# Stop after so many iterations:
+NUM_ITER   : 50 #  94 gives same result as Sigmund's top(60,20,0.5,3.0,1.5)
+# If you'd rather use a stop criteria:
+#CHG_STOP   : 0.01 #  gives same result as Sigmund's top(60,20,0.5,3.0,1.5)
+
+# all the eigth nodes of the central voxel
+FXTR_NODE_X: 3790; 3791; 3810; 3811; 4190; 4191; 4210; 4211
+FXTR_NODE_Y: 3790; 3791; 3810; 3811; 4190; 4191; 4210; 4211
+FXTR_NODE_Z: 3790; 3791; 3810; 3811; 4190; 4191; 4210; 4211
+
+# NE-SW stick
+LOAD_NODE_Y: 181; 7399
+LOAD_VALU_Y: 1; -1
+
+# NW-SE stick
+# LOAD_NODE_Z: 199; 7381
+# LOAD_VALU_Z: -1; 1
+
+# Grey-scale filter (GSF)
+P_FAC      : 1
+P_HOLD     : 15  # num of iters to hold p constant from start
+P_INCR     : 0.2  # increment by this amount
+P_CON      : 1  # increment every 'P_CON' iters
+P_MAX      : 3  # max value of 'P_CON'
+
+Q_FAC      : 1
+Q_HOLD     : 15  # num of iters to hold q constant from start
+Q_INCR     : 0.05  # increment by this amount
+Q_CON      : 1  # increment every 'Q_CON' iters
+Q_MAX      : 5  # max value of 'Q_CON'
