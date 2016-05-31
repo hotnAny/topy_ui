@@ -45,7 +45,9 @@ panel.append(tblInfo);
 
 
 //
+//
 // specify elements, boundary and load
+//
 //
 var tblAxes = $('<table class="ui-widget"></table>');
 tblAxes.css('margin', '5px');
@@ -61,7 +63,9 @@ for (var i = axes.length - 1; i >= 0; i--) {
 panel.append(tblAxes);
 
 //
+//
 //	dialog for specifying boundary and load
+//
 //
 var dlgBoundLoad = $('<div></div>');
 dlgBoundLoad.title = 'Boundary and Load';
@@ -119,3 +123,19 @@ trScript.append(taScript);
 tblScript.append(trScript);
 
 panel.append(tblScript);
+
+
+addUIforParam('probName', 'PROB_NAME');
+addUIforParam('nElmX' 'NUM_ELEM_X');
+addUIforParam('nElmY' 'NUM_ELEM_Y');
+addUIforParam('nElmZ' 'NUM_ELEM_Z');
+
+//
+// subroutines for adding editable parameters and the corresponding uis
+// @param ui - the id (for jquery) of the ui
+// @param param - the corresponding tpd parameter
+//
+function addUIforParam(ui, param) {
+	UIOFPRAMS.push(ui);
+	PARAMSFORUI.push(param);
+}

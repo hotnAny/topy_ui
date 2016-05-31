@@ -81,76 +81,72 @@ var initPanel = function() {
 
 		// set initial voxel grid dimensions
 		$('#nElm' + axes[i]).val(10);
-		$('#nElm' + axes[i]).trigger('input')
-
-		//
-		// prompt for specifying load/boundary
-		//
-		dlgBoundLoad.dialog({
-			autoOpen: false,
-			maxWidth: 280,
-			maxHeight: 160,
-			width: 280,
-			height: 160,
-			show: {
-				effect: "fade",
-				duration: 500
-			},
-			hide: {
-				effect: "fade",
-				duration: 500
-			},
-			position: {
-				my: "right middle",
-				at: "right-25 top+160",
-				of: window
-			}
-		});
-		// dlgBoundLoad.dialog('option', 'position', [1024, 256]);
-
-		btnOk.button();
-		btnOk.click(function(e) {
-			for (var i = gSelVoxels.length - 1; i >= 0; i--) {
-				var voxel = gSelVoxels[i];
-				log(voxel)
-
-				// check if it is a boundary
-				// voxel.isBoundary = false;
-				for (var j = axes.length - 1; j >= 0; j--) {
-					if ($('#cb' + axes[j]).is(':checked')) {
-						// voxel.isBoundary = true;
-						// if (voxel.fxtr == undefined) {
-						// 	voxel.fxtr = [];
-						// }
-						// voxel.fxtr[axes[j]] = voxel.index;
-						voxel.setBoundary(axes[j]);
-					}
-				}
-				log(voxel.fxtr);
-
-				// check if it is a load point
-				// voxel.isLoad = false;
-				for (var j = axes.length - 1; j >= 0; j--) {
-					try {
-						var load = parseFloat($('#load' + axes[j]).val());
-						if (isNaN(load) == false) {
-							// voxel.isLoad = true;
-							// if (voxel.load == undefined) {
-							// 	voxel.load = [];
-							// }
-							// voxel.load[axes[j]] = load;
-							voxel.setLoad(axes[j], load)
-						}
-					} catch (e) {
-
-					}
-				}
-				log(voxel.loads);
-			}
-
-			dlgBoundLoad.dialog('close');
-		});
+		$('#nElm' + axes[i]).trigger('input');
 	}
+
+	//
+	// prompt for specifying load/boundary
+	//
+	dlgBoundLoad.dialog({
+		autoOpen: false,
+		maxWidth: 280,
+		maxHeight: 160,
+		width: 280,
+		height: 160,
+		show: {
+			effect: "fade",
+			duration: 500
+		},
+		hide: {
+			effect: "fade",
+			duration: 500
+		},
+		position: {
+			my: "right middle",
+			at: "right-25 top+160",
+			of: window
+		}
+	});
+	// dlgBoundLoad.dialog('option', 'position', [1024, 256]);
+
+	btnOk.button();
+	btnOk.click(function(e) {
+		for (var i = gSelVoxels.length - 1; i >= 0; i--) {
+			var voxel = gSelVoxels[i];
+
+			// check if it is specified as a boundary
+			for (var j = axes.length - 1; j >= 0; j--) {
+				if ($('#cb' + axes[j]).is(':checked')) {
+					voxel.setBoundary(axes[j]);
+				}
+				voxel.mesh.material = matBoundary;
+				voxel.mesh.material.needsUpdate = true;
+			}
+
+			// check if it is specified as a load point
+			for (var j = axes.length - 1; j >= 0; j--) {
+				try {
+					var load = parseFloat($('#load' + axes[j]).val());
+					if (isNaN(load) == false) {
+						voxel.setLoad(axes[j], load);
+						voxel.mesh.material = matLoad;
+						voxel.mesh.material.needsUpdate = true;
+					}
+				} catch (e) {
+
+				}
+			}
+		}
+
+		dlgBoundLoad.dialog('close');
+	});
+
+	//
+	// textarea for the tpd file editing
+	//
+	taScript.on('input', function(e) {
+		log('script updated')
+	});
 
 	btnRun.button();
 	btnRun.click(function(e) {
@@ -159,6 +155,59 @@ var initPanel = function() {
 	});
 }
 
+//
+//	generate the tpd file from an object contiaining the info.
+//	@param tpd - a javascript objec that contains information of the tpd variables
+//
+function updateTpdText(tpd) {
+	var strTpd = "[ToPy Problem Definition File v2007]\n";
+
+	for (var param in tpd) {
+		strTpd += param + ": " + tpd[param] + "\n";
+	}
+
+	taScript.html(strTpd);
+}
+
+
+// function updateTpd(tpd, param, value) {
+// 	tpd[param] = value;
+// }
+
+// function updateTpdText() {
+// 	// body...
+// }
+
+//
+// update UI for editing tpd based on an underlying text file (string)
+//
+function updateTpdUI(strTpd) {
+	var uiParams = []; // the ui's (assuming textboxes, mostly)
+	var params = []; // the paramester each ui correspond to
+
+	for (var i = uiParams.length - 1; i >= 0; i--) {
+		// find the correpsonding value of params[i] from strTpd
+
+		// update the val of uiParams[i] accordingly
+	}
+}
+
+//
+//	sync tpd object and the editable version on the UI
+//
+function syncTpd(tpdObj, tpdText) {
+
+}
+
+//
+// thee ready function
+//
 $(document).ready(function() {
 	initPanel();
+
+	// load the tpd template
+	loadJSON('res/tpd.json', function(response) {
+		gTpd = JSON.parse(response);
+		updateTpdText(gTpd);
+	});
 });

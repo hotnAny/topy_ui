@@ -25,6 +25,7 @@ function onMouseDown(e) {
 	}
 
 	gMouseDown = true;
+	gSelVoxels.splice(0, gSelVoxels.length);
 	gGlueState = selectVoxel(e);
 }
 
@@ -35,7 +36,7 @@ function onMouseMove(e) {
 }
 
 function onMouseUp(e) {
-	if (gGlueState) { // if it's a selection operation
+	if (gMouseDown && gGlueState) { // if it's a selection operation
 		// show prompt
 		dlgBoundLoad.dialog('open');
 	}
@@ -58,12 +59,12 @@ function selectVoxel(e, alwaysHighlight) {
 		} else { // remove it from permenante storage
 			var storage;
 			if (voxel.isBoundary) {
+				removeFromArray(gBoundVoxels, voxel);
 			}
 
 			if (voxel.isLoad) {
+				removeFromArray(gLoadVoxels, voxel);
 			}
-
-			
 		}
 	}
 	return false;

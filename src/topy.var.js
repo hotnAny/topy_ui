@@ -75,3 +75,10 @@ var gVoxelsLoad = [];
 var gSelVoxels = []; // temporary buffer for selected voxels
 var gVoxelPrev; // last encountered voxel
 var gIsSpecified;
+
+//
+// tpd file
+//
+var gTpd;
+var PARAMSFORUI = [];
+var UIOFPRAMS = [];
