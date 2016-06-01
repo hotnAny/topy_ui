@@ -19,5 +19,11 @@ function unitTest() {
 	// 	log(tpd)
 	// })
 
+
+	/*
+		topy preprocessing
+	*/
+	elm2nodes(25, 25, 25, 1, 1, 25);
+
 	log('------------- unit test ends -------------')
 }

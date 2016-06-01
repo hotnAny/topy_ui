@@ -126,6 +126,9 @@ var initPanel = function() {
 
 	btnOk.button();
 	btnOk.click(function(e) {
+		var fxtr = [false, false, false];
+		var ndoes = [];
+
 		for (var i = gSelVoxels.length - 1; i >= 0; i--) {
 			var voxel = gSelVoxels[i];
 
@@ -136,6 +139,7 @@ var initPanel = function() {
 					voxel.mesh.material = matBoundary;
 					voxel.mesh.material.needsUpdate = true;
 					gBoundVoxels.push(voxel);
+					fxtr[j] = true;
 				}
 			}
 
@@ -153,7 +157,11 @@ var initPanel = function() {
 
 				}
 			}
+
+			nodes = nodes.concat(elm2nodes(voxel.index));
 		}
+
+		// updating tpd obj/file
 
 		dlgBoundLoad.dialog('close');
 	});
@@ -173,7 +181,7 @@ var initPanel = function() {
 }
 
 //
-//
+//	update a tpd object maintaining information for a global tpd config file
 //
 function updateTpd(tpd, ui, value) {
 	for (var i = UIOFPARAMS.length - 1; i >= 0; i--) {
@@ -203,13 +211,10 @@ function updateTpdText(tpd) {
 // update UI for editing tpd based on an underlying text file (string)
 //
 function updateTpdUI(strTpd) {
-	// var uiParams = []; // the ui's (assuming textboxes, mostly)
-	// var params = []; // the paramester each ui correspond to
 	for (var i = 0; i < UIOFPARAMS.length; i++) {
 		// find the correpsonding value of params[i] from strTpd
 		var ui = UIOFPARAMS[i];
 		var param = PARAMSFORUI[i];
-		// log(param)
 		var idxParam = strTpd.indexOf(param);
 		var idxValue0 = strTpd.substring(idxParam).indexOf(':') + 1;
 		var idxValue1 = strTpd.substring(idxParam).indexOf('\n');
@@ -218,7 +223,6 @@ function updateTpdUI(strTpd) {
 
 		// update the val of uiParams[i] accordingly
 		$('#' + ui).val(val);
-		// log(ui + ": " + val)
 	}
 }
 
