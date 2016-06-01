@@ -133,9 +133,10 @@ var initPanel = function() {
 			for (var j = axes.length - 1; j >= 0; j--) {
 				if ($('#cb' + axes[j]).is(':checked')) {
 					voxel.setBoundary(axes[j]);
+					voxel.mesh.material = matBoundary;
+					voxel.mesh.material.needsUpdate = true;
+					gBoundVoxels.push(voxel);
 				}
-				voxel.mesh.material = matBoundary;
-				voxel.mesh.material.needsUpdate = true;
 			}
 
 			// check if it is specified as a load point
@@ -146,6 +147,7 @@ var initPanel = function() {
 						voxel.setLoad(axes[j], load);
 						voxel.mesh.material = matLoad;
 						voxel.mesh.material.needsUpdate = true;
+						gLoadVoxels.push(voxel);
 					}
 				} catch (e) {
 

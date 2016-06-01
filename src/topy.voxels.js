@@ -48,7 +48,7 @@ function updateVoxels(nElms) {
 	// render the selected voxels (load or boundary)
 	//
 	for (var i = 0; i < gBoundVoxels.length; i++) {
-		var index = gSelVoxels[i].index;
+		var index = gBoundVoxels[i].index;
 		var voxel = makeVoxel(DIMVOXEL, -index[0], index[1], index[2], matBoundary, true);
 		voxel.index = index;
 		scene.add(voxel);
@@ -56,7 +56,7 @@ function updateVoxels(nElms) {
 	}
 
 	for (var i = 0; i < gLoadVoxels.length; i++) {
-		var index = gSelVoxels[i].index;
+		var index = gLoadVoxels[i].index;
 		var voxel = makeVoxel(DIMVOXEL, -index[0], index[1], index[2], matLoad, true);
 		voxel.index = index;
 		scene.add(voxel);
