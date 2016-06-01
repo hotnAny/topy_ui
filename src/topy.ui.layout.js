@@ -126,9 +126,9 @@ panel.append(tblScript);
 
 
 addUIforParam('probName', 'PROB_NAME');
-addUIforParam('nElmX' 'NUM_ELEM_X');
-addUIforParam('nElmY' 'NUM_ELEM_Y');
-addUIforParam('nElmZ' 'NUM_ELEM_Z');
+addUIforParam('nElmX', 'NUM_ELEM_X');
+addUIforParam('nElmY', 'NUM_ELEM_Y');
+addUIforParam('nElmZ', 'NUM_ELEM_Z');
 
 //
 // subroutines for adding editable parameters and the corresponding uis
@@ -136,6 +136,6 @@ addUIforParam('nElmZ' 'NUM_ELEM_Z');
 // @param param - the corresponding tpd parameter
 //
 function addUIforParam(ui, param) {
-	UIOFPRAMS.push(ui);
+	UIOFPARAMS.push(ui);
 	PARAMSFORUI.push(param);
 }

@@ -12,6 +12,17 @@ var initPanel = function() {
 
 	unitTest();
 
+	//
+	//	problem name
+	//
+	$('#probName').on('input', function(e) {
+		var tb = $(e.target);
+		if (gTpd != undefined) {
+			updateTpd(gTpd, tb.attr('id'), tb.val());
+			updateTpdText(gTpd);
+		}
+	});;
+
 	for (var i = axes.length - 1; i >= 0; i--) {
 		//
 		// slider behavior
@@ -71,8 +82,13 @@ var initPanel = function() {
 			layer = Math.min(MAXNUMELMS, layer);
 			$(tb.attr('lb')).html(layer);
 
+			// update text area (script)
+			if (gTpd != undefined) {
+				updateTpd(gTpd, tb.attr('id'), tb.val());
+				updateTpdText(gTpd);
+			}
+
 			// update voxels
-			// updateVoxels(gNumElms)
 			updateVoxels(getValuesFromArray(gIdxLayers));
 
 		});
@@ -107,7 +123,6 @@ var initPanel = function() {
 			of: window
 		}
 	});
-	// dlgBoundLoad.dialog('option', 'position', [1024, 256]);
 
 	btnOk.button();
 	btnOk.click(function(e) {
@@ -145,7 +160,7 @@ var initPanel = function() {
 	// textarea for the tpd file editing
 	//
 	taScript.on('input', function(e) {
-		log('script updated')
+		updateTpdUI(taScript.val());
 	});
 
 	btnRun.button();
@@ -156,6 +171,18 @@ var initPanel = function() {
 }
 
 //
+//
+//
+function updateTpd(tpd, ui, value) {
+	for (var i = UIOFPARAMS.length - 1; i >= 0; i--) {
+		if (UIOFPARAMS[i].localeCompare(ui) == 0) {
+			tpd[PARAMSFORUI[i]] = value;
+			break;
+		}
+	}
+}
+
+//
 //	generate the tpd file from an object contiaining the info.
 //	@param tpd - a javascript objec that contains information of the tpd variables
 //
@@ -163,40 +190,34 @@ function updateTpdText(tpd) {
 	var strTpd = "[ToPy Problem Definition File v2007]\n";
 
 	for (var param in tpd) {
-		strTpd += param + ": " + tpd[param] + "\n";
+		strTpd += param + ":" + tpd[param] + "\n";
 	}
 
-	taScript.html(strTpd);
+	taScript.val(strTpd);
 }
 
-
-// function updateTpd(tpd, param, value) {
-// 	tpd[param] = value;
-// }
-
-// function updateTpdText() {
-// 	// body...
-// }
 
 //
 // update UI for editing tpd based on an underlying text file (string)
 //
 function updateTpdUI(strTpd) {
-	var uiParams = []; // the ui's (assuming textboxes, mostly)
-	var params = []; // the paramester each ui correspond to
-
-	for (var i = uiParams.length - 1; i >= 0; i--) {
+	// var uiParams = []; // the ui's (assuming textboxes, mostly)
+	// var params = []; // the paramester each ui correspond to
+	for (var i = 0; i < UIOFPARAMS.length; i++) {
 		// find the correpsonding value of params[i] from strTpd
+		var ui = UIOFPARAMS[i];
+		var param = PARAMSFORUI[i];
+		// log(param)
+		var idxParam = strTpd.indexOf(param);
+		var idxValue0 = strTpd.substring(idxParam).indexOf(':') + 1;
+		var idxValue1 = strTpd.substring(idxParam).indexOf('\n');
+		// log(idxValue0 + " " + idxValue1)
+		var val = strTpd.substring(idxParam).substring(idxValue0, idxValue1);
 
 		// update the val of uiParams[i] accordingly
+		$('#' + ui).val(val);
+		// log(ui + ": " + val)
 	}
-}
-
-//
-//	sync tpd object and the editable version on the UI
-//
-function syncTpd(tpdObj, tpdText) {
-
 }
 
 //
@@ -209,5 +230,6 @@ $(document).ready(function() {
 	loadJSON('res/tpd.json', function(response) {
 		gTpd = JSON.parse(response);
 		updateTpdText(gTpd);
+		updateTpdUI(taScript.val());
 	});
 });

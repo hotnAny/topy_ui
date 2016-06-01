@@ -81,4 +81,4 @@ var gIsSpecified;
 //
 var gTpd;
 var PARAMSFORUI = [];
-var UIOFPRAMS = [];
+var UIOFPARAMS = [];
