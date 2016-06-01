@@ -134,3 +134,11 @@ function loadJSON(path, callback) {
 	};
 	xobj.send(null);
 }
+
+function stitch(array, sep) {
+	var str = '';
+	for (var i = array.length - 1; i >= 0; i--) {
+		str = (i > 0 ? sep : '') + array[i] + str;
+	}
+	return str;
+}
