@@ -89,6 +89,8 @@ var gSelectionMode = false; // glue state for constantly selecting or deselectin
 var SELECTION = 0;
 var DESELECTION = 1;
 
+var gHoveredVoxelMesh;
+
 //
 // tpd file
 //

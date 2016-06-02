@@ -32,8 +32,24 @@ function onMouseDown(e) {
 }
 
 function onMouseMove(e) {
+	if(dlgBoundLoad.dialog('isOpen') == true) {
+		return;
+	}
+	
 	if (gMouseDown) {
 		selectVoxel(e, gSelectionMode);
+	} else {
+
+		var objs = rayCast(e.clientX, e.clientY, gVoxels);
+		if (objs.length > 0) {
+			if (gHoveredVoxelMesh != objs[0].object) {
+				if (gHoveredVoxelMesh != undefined) {
+					gHoveredVoxelMesh.material.opacity /= 10;
+				}
+				gHoveredVoxelMesh = objs[0].object;
+				gHoveredVoxelMesh.material.opacity *= 10;
+			}
+		}
 	}
 }
 
@@ -116,15 +132,15 @@ function setHighlight(mesh, alwaysHighlight) {
 	var toHighlight = alwaysHighlight == undefined ? !mesh.highlighted : alwaysHighlight;
 
 	if (toHighlight) {
-		if (mesh.material != MATERIALCONTRAST) {
-			mesh.material = MATERIALCONTRAST;
+		if (mesh.material.color != MATERIALCONTRAST.color) {
+			mesh.material = MATERIALCONTRAST.clone();
 			mesh.material.needsUpdate = true;
 		}
 		mesh.highlighted = true;
 		return true;
 	} else {
-		if (mesh.material != MATERIALNORMAL) {
-			mesh.material = MATERIALNORMAL;
+		if (mesh.material.color != MATERIALNORMAL.color) {
+			mesh.material = MATERIALNORMAL.clone();
 			mesh.material.needsUpdate = true;
 		}
 		mesh.highlighted = false;

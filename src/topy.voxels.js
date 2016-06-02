@@ -73,13 +73,7 @@ function updateVoxels(nElms) {
 //
 function makeVoxel(dim, i, j, k, mat, noMargin) {
 	var geometry = new THREE.BoxGeometry(dim, dim, dim);
-	var material = new THREE.MeshBasicMaterial({
-		color: COLORNORMAL,
-		transparent: true,
-		opacity: 0.25,
-		// wireframe: true
-	});
-	var voxel = new THREE.Mesh(geometry, mat);
+	var voxel = new THREE.Mesh(geometry, mat.clone());
 
 	// leave some margin between voxels
 	if (noMargin) {} else {
