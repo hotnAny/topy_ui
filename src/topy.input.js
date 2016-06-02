@@ -26,19 +26,26 @@ function onMouseDown(e) {
 
 	gMouseDown = true;
 	gSelVoxels.splice(0, gSelVoxels.length);
-	gGlueState = selectVoxel(e);
+
+	// gGlueState is true if the first voxel clicked on is not yet highlighted
+	// otherwise it's false
+	// the following operation will be selection if gGlueState is true; otherwise will be de-selection
+	gSelectionMode = selectVoxel(e);
 }
 
 function onMouseMove(e) {
 	if (gMouseDown) {
-		selectVoxel(e, gGlueState);
+		selectVoxel(e, gSelectionMode);
 	}
 }
 
 function onMouseUp(e) {
-	if (gMouseDown && gGlueState) { // if it's a selection operation
-		// show prompt
-		dlgBoundLoad.dialog('open');
+	if (gMouseDown) {
+		if (gSelectionMode == SELECTION) { // if it's a selection operation
+			dlgBoundLoad.dialog('open');
+		} else {
+			updateSpecialVoxels()
+		}
 	}
 	gMouseDown = false;
 }
@@ -46,32 +53,99 @@ function onMouseUp(e) {
 //
 // subroutine for selecting a voxel, specific to topy_ui
 //
-function selectVoxel(e, alwaysHighlight) {
+function selectVoxel(e, selectionMode) {
 	var objs = rayCast(e.clientX, e.clientY, gVoxels);
 	if (objs.length > 0) {
-		var voxel = new Voxel(objs[0].object)
-			// var voxel = objs[0].object;
-		if (setHighlight(voxel.mesh, alwaysHighlight)) {
-			if (isVoxelSelected(voxel.index) == false) { // if currently not selected
+		var mesh = objs[0].object;
+		var highlighted = undefined;
+		
+		switch (selectionMode) {
+			case SELECTION: // always be selecting
+				highlighted = setHighlight(mesh, true);
+				break;
+			case DESELECTION: // always be deselecting
+				highlighted = setHighlight(mesh, false);
+				break;
+			default: // select unhighlighted and deselect highlighted; and return it as a mode
+				highlighted = setHighlight(mesh);
+				break;
+		}
+
+		if (highlighted == true) {
+			if (isVoxelSelected(mesh.index) == false) { // if currently not highlighted into the temp buffer
+				var voxel = new Voxel(mesh)
 				gSelVoxels.push(voxel);
 			}
-			return true;
-		} else { // remove it from permenante storage
-			var storage;
-			if (voxel.isBoundary) {
-				removeFromArray(gBoundVoxels, voxel);
-			}
+		} else if (highlighted == false) {
+			var voxel = retrieveVoxel(mesh.index);
+			if (voxel != undefined) {
+				if (voxel.isBoundary) {
+					removeFromArray(gBoundVoxels, voxel);
+				}
 
-			if (voxel.isLoad) {
-				removeFromArray(gLoadVoxels, voxel);
+				if (voxel.isLoad) {
+					removeFromArray(gLoadVoxels, voxel);
+				}
 			}
 		}
+
+		return highlighted ? SELECTION : DESELECTION;
 	}
-	return false;
+
+	// var objs = rayCast(e.clientX, e.clientY, gVoxels);
+	// if (objs.length > 0) {
+	// 	var mesh = objs[0].object;
+
+	// 	var voxel = retrieveVoxel(mesh.index);
+
+	// 	if (voxel == undefined) {
+
+	// 	} else {
+
+	// 	}
+
+	// 	// var voxel = objs[0].object;
+	// 	if (setHighlight(mesh, alwaysHighlight)) {
+	// 		if (isVoxelSelected(mesh.index) == false) { // if currently not highlighted into the temp buffer
+	// 			var voxel = new Voxel(mesh)
+	// 			gSelVoxels.push(voxel);
+	// 		}
+	// 		return true;
+	// 	} else { // remove it from permenante storage
+	// 		if (voxel.isBoundary) {
+	// 			removeFromArray(gBoundVoxels, voxel);
+	// 		}
+
+	// 		if (voxel.isLoad) {
+	// 			removeFromArray(gLoadVoxels, voxel);
+	// 		}
+	// 	}
+	// }
+	// return false;
 }
 
-function setHighlight(mesh, alwaysHighlight) {
+function retrieveVoxel(index) {
+	var specialVoxels = gBoundVoxels.concat(gLoadVoxels);
+	for (var i = specialVoxels.length - 1; i >= 0; i--) {
+		var isMatch = true;
+		for (var j = 0; j < index.length; j++) {
+			if (index[j] != specialVoxels[i].index[j]) {
+				isMatch = false;
+				break;
+			}
+		}
 
+		if (isMatch) {
+			return specialVoxels[i];
+		}
+	}
+	return undefined;
+}
+
+//
+//	set a designated mesh highlight by changing the material property
+//
+function setHighlight(mesh, alwaysHighlight) {
 	var toHighlight = alwaysHighlight == undefined ? !mesh.highlighted : alwaysHighlight;
 
 	if (toHighlight) {
@@ -93,7 +167,7 @@ function setHighlight(mesh, alwaysHighlight) {
 }
 
 //
-//	tell if a voxel has already been selected by the mouse operation
+//	tell if a voxel has already been highlighted by the mouse operation
 //
 function isVoxelSelected(index) {
 	for (var i = 0; i < gSelVoxels.length; i++) {

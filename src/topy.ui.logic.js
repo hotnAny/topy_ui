@@ -126,8 +126,10 @@ var initPanel = function() {
 
 	btnOk.button();
 	btnOk.click(function(e) {
-		var fxtr = [false, false, false];
-		var ndoes = [];
+		var axes = ['X', 'Y', 'Z'];
+		// var fxtr = [false, false, false];
+		// var loads = [undefined, undefined, undefined];
+		var nodes = [];
 
 		for (var i = gSelVoxels.length - 1; i >= 0; i--) {
 			var voxel = gSelVoxels[i];
@@ -138,8 +140,9 @@ var initPanel = function() {
 					voxel.setBoundary(axes[j]);
 					voxel.mesh.material = matBoundary;
 					voxel.mesh.material.needsUpdate = true;
+					voxel.setBoundary(axes[j]);
 					gBoundVoxels.push(voxel);
-					fxtr[j] = true;
+					// fxtr[j] = true;
 				}
 			}
 
@@ -151,17 +154,35 @@ var initPanel = function() {
 						voxel.setLoad(axes[j], load);
 						voxel.mesh.material = matLoad;
 						voxel.mesh.material.needsUpdate = true;
+						voxel.setLoad(axes[j], load);
 						gLoadVoxels.push(voxel);
+						// loads[j] = load;
 					}
-				} catch (e) {
-
-				}
+				} catch (e) {}
 			}
 
-			nodes = nodes.concat(elm2nodes(voxel.index));
+			// nodes = nodes.concat(compactElm2Nodes(voxel.index));
 		}
 
-		// updating tpd obj/file
+		updateSpecialVoxels();
+
+		// // updating boundary info to tpd obj/file
+		// for (var i = fxtr.length - 1; i >= 0; i--) {
+		// 	if (fxtr[i]) {
+		// 		var param = 'FXTR_NODE_' + axes[i];
+		// 		gTpd[param] += (gTpd[param] == undefined ? '' : ';') + stitch(nodes, ';');
+		// 	}
+		// }
+
+		// // updating load info to tpd obj/file
+		// for (var i = loads.length - 1; i >= 0; i--) {
+		// 	if (loads[i] != undefined) {
+		// 		var param0 = 'LOAD_NODE_' + axes[i];
+		// 		gTpd[param0] += (gTpd[param0] == undefined ? '' : ';') + stitch(nodes, ';');
+		// 		var param1 = 'LOAD_VALU_' + axes[i];
+		// 		gTpd[param1] += (gTpd[param1] == undefined ? '' : ';') + (loads[i] + '@' + nodes.length);
+		// 	}
+		// }
 
 		dlgBoundLoad.dialog('close');
 	});
@@ -178,6 +199,58 @@ var initPanel = function() {
 		// callTopy();
 		dlgBoundLoad.dialog('open');
 	});
+}
+
+function updateSpecialVoxels() {
+
+	var fxtrNodes = new Array();
+	var loadNodes = new Array();
+	var loadValues = new Array();
+
+	for (var i = gAxes.length - 1; i >= 0; i--) {
+		fxtrNodes[gAxes[i]] = [];
+		loadNodes[gAxes[i]] = [];
+		loadValues[gAxes[i]] = [];
+	}
+
+	for (var i = gBoundVoxels.length - 1; i >= 0; i--) {
+		var voxel = gBoundVoxels[i];
+		for (var j = gAxes.length - 1; j >= 0; j--) {
+			if (voxel.fxtr[gAxes[j]] == true) {
+				var nodes = compactElm2Nodes(voxel.index);
+				fxtrNodes[gAxes[j]] = fxtrNodes[gAxes[j]].concat(nodes);
+			}
+		}
+	}
+
+	for (var i = gLoadVoxels.length - 1; i >= 0; i--) {
+		var voxel = gLoadVoxels[i];
+		for (var j = gAxes.length - 1; j >= 0; j--) {
+			if (voxel.loads[gAxes[j]] != undefined) {
+				var nodes = compactElm2Nodes(voxel.index);
+				loadNodes[gAxes[j]] = loadNodes[gAxes[j]].concat(nodes);
+				loadValues[gAxes[j]].push(voxel.loads[gAxes[j]] + '@8');
+			}
+		}
+	}
+
+	// update the tpd object/file
+	for (var i = gAxes.length - 1; i >= 0; i--) {
+		var nodesFxtr = fxtrNodes[gAxes[i]];
+		var paramFxtr = 'FXTR_NODE_' + gAxes[i];
+		gTpd[paramFxtr] = stitch(nodesFxtr, ';');
+
+		var nodesLoad = loadNodes[gAxes[i]];
+		var paramLoadNode = 'LOAD_NODE_' + gAxes[i];
+		gTpd[paramLoadNode] = stitch(nodesLoad, ';');
+
+		var valuesLoad = loadValues[gAxes[i]];
+		var paramLoadValue = 'LOAD_VALU_' + gAxes[i];
+		gTpd[paramLoadValue] = stitch(valuesLoad, ';');
+	}
+
+	updateTpdText(gTpd);
+
 }
 
 //

@@ -21,6 +21,7 @@ var gIdxLayers = new Array();
 //
 // voxels
 //
+var gAxes = ['X', 'Y', 'Z'];
 var gVoxels = [];
 var gDimsVoxels = []; // the existing dimension of the voxel grid
 var gBoundVoxels = [];
@@ -63,18 +64,30 @@ class Voxel {
 	get loads() {
 		return this._loads;
 	}
+
+	get isBoundary() {
+		return this._isBoundary;
+	}
+
+	get isLoad() {
+		return this._isLoad;
+	}
 }
 
 //
 // mouse selection
 //
 var gMouseDown = false;
-var gGlueState = false; // glue state for constantly selecting or deselecting voxels when dragging
+
 var gVoxelsBoundary = []; // permanently buffer for selected voxels
 var gVoxelsLoad = [];
 var gSelVoxels = []; // temporary buffer for selected voxels
 var gVoxelPrev; // last encountered voxel
 var gIsSpecified;
+
+var gSelectionMode = false; // glue state for constantly selecting or deselecting voxels when dragging
+var SELECTION = 0;
+var DESELECTION = 1;
 
 //
 // tpd file
