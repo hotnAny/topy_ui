@@ -27,9 +27,7 @@ function onMouseDown(e) {
 	gMouseDown = true;
 	gSelVoxels.splice(0, gSelVoxels.length);
 
-	// gGlueState is true if the first voxel clicked on is not yet highlighted
-	// otherwise it's false
-	// the following operation will be selection if gGlueState is true; otherwise will be de-selection
+	// if the first clicked-on voxel is selected, the subsequent operation is to deselect voxels; vice versa
 	gSelectionMode = selectVoxel(e);
 }
 
@@ -58,7 +56,7 @@ function selectVoxel(e, selectionMode) {
 	if (objs.length > 0) {
 		var mesh = objs[0].object;
 		var highlighted = undefined;
-		
+
 		switch (selectionMode) {
 			case SELECTION: // always be selecting
 				highlighted = setHighlight(mesh, true);
@@ -91,37 +89,6 @@ function selectVoxel(e, selectionMode) {
 
 		return highlighted ? SELECTION : DESELECTION;
 	}
-
-	// var objs = rayCast(e.clientX, e.clientY, gVoxels);
-	// if (objs.length > 0) {
-	// 	var mesh = objs[0].object;
-
-	// 	var voxel = retrieveVoxel(mesh.index);
-
-	// 	if (voxel == undefined) {
-
-	// 	} else {
-
-	// 	}
-
-	// 	// var voxel = objs[0].object;
-	// 	if (setHighlight(mesh, alwaysHighlight)) {
-	// 		if (isVoxelSelected(mesh.index) == false) { // if currently not highlighted into the temp buffer
-	// 			var voxel = new Voxel(mesh)
-	// 			gSelVoxels.push(voxel);
-	// 		}
-	// 		return true;
-	// 	} else { // remove it from permenante storage
-	// 		if (voxel.isBoundary) {
-	// 			removeFromArray(gBoundVoxels, voxel);
-	// 		}
-
-	// 		if (voxel.isLoad) {
-	// 			removeFromArray(gLoadVoxels, voxel);
-	// 		}
-	// 	}
-	// }
-	// return false;
 }
 
 function retrieveVoxel(index) {

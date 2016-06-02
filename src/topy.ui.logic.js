@@ -23,11 +23,11 @@ var initPanel = function() {
 		}
 	});;
 
-	for (var i = axes.length - 1; i >= 0; i--) {
+	for (var i = gAxes.length - 1; i >= 0; i--) {
 		//
 		// slider behavior
 		//
-		$('#sldr' + axes[i]).slider({
+		$('#sldr' + gAxes[i]).slider({
 			orientation: "horizontal",
 			range: "min",
 			max: 100,
@@ -53,13 +53,13 @@ var initPanel = function() {
 				updateVoxels(getValuesFromArray(gIdxLayers));
 			}
 		});
-		$('#sldr' + axes[i]).attr('lb', '#layer' + axes[i]);
-		$('#sldr' + axes[i]).attr('tb', 'nElm' + axes[i]);
+		$('#sldr' + gAxes[i]).attr('lb', '#layer' + gAxes[i]);
+		$('#sldr' + gAxes[i]).attr('tb', 'nElm' + gAxes[i]);
 
 		//
 		// text box behavior
 		//
-		$('#nElm' + axes[i]).on('input', function(e) {
+		$('#nElm' + gAxes[i]).on('input', function(e) {
 			var tb = $(e.target);
 			var nElm = Math.min(MAXNUMELMS, float2int(tb.val()));
 
@@ -92,12 +92,12 @@ var initPanel = function() {
 			updateVoxels(getValuesFromArray(gIdxLayers));
 
 		});
-		$('#nElm' + axes[i]).attr('lb', '#layer' + axes[i]);
-		$('#nElm' + axes[i]).attr('sldr', '#sldr' + axes[i]);
+		$('#nElm' + gAxes[i]).attr('lb', '#layer' + gAxes[i]);
+		$('#nElm' + gAxes[i]).attr('sldr', '#sldr' + gAxes[i]);
 
 		// set initial voxel grid dimensions
-		$('#nElm' + axes[i]).val(10);
-		$('#nElm' + axes[i]).trigger('input');
+		$('#nElm' + gAxes[i]).val(10);
+		$('#nElm' + gAxes[i]).trigger('input');
 	}
 
 	//
@@ -126,65 +126,50 @@ var initPanel = function() {
 
 	btnOk.button();
 	btnOk.click(function(e) {
-		var axes = ['X', 'Y', 'Z'];
-		// var fxtr = [false, false, false];
-		// var loads = [undefined, undefined, undefined];
-		var nodes = [];
-
 		for (var i = gSelVoxels.length - 1; i >= 0; i--) {
 			var voxel = gSelVoxels[i];
 
 			// check if it is specified as a boundary
-			for (var j = axes.length - 1; j >= 0; j--) {
-				if ($('#cb' + axes[j]).is(':checked')) {
-					voxel.setBoundary(axes[j]);
+			for (var j = gAxes.length - 1; j >= 0; j--) {
+				if ($('#cb' + gAxes[j]).is(':checked')) {
+					voxel.setBoundary(gAxes[j]);
 					voxel.mesh.material = matBoundary;
 					voxel.mesh.material.needsUpdate = true;
-					voxel.setBoundary(axes[j]);
 					gBoundVoxels.push(voxel);
-					// fxtr[j] = true;
 				}
 			}
 
 			// check if it is specified as a load point
-			for (var j = axes.length - 1; j >= 0; j--) {
+			for (var j = gAxes.length - 1; j >= 0; j--) {
 				try {
-					var load = parseFloat($('#load' + axes[j]).val());
+					var load = parseFloat($('#load' + gAxes[j]).val());
 					if (isNaN(load) == false) {
-						voxel.setLoad(axes[j], load);
+						voxel.setLoad(gAxes[j], load);
 						voxel.mesh.material = matLoad;
 						voxel.mesh.material.needsUpdate = true;
-						voxel.setLoad(axes[j], load);
 						gLoadVoxels.push(voxel);
-						// loads[j] = load;
 					}
 				} catch (e) {}
 			}
 
-			// nodes = nodes.concat(compactElm2Nodes(voxel.index));
+			// if it is none of anything, remove it
+			if (!voxel.isBoundary && !voxel.isLoad) {
+				setHighlight(voxel.mesh, false);
+			}
 		}
 
 		updateSpecialVoxels();
 
-		// // updating boundary info to tpd obj/file
-		// for (var i = fxtr.length - 1; i >= 0; i--) {
-		// 	if (fxtr[i]) {
-		// 		var param = 'FXTR_NODE_' + axes[i];
-		// 		gTpd[param] += (gTpd[param] == undefined ? '' : ';') + stitch(nodes, ';');
-		// 	}
-		// }
-
-		// // updating load info to tpd obj/file
-		// for (var i = loads.length - 1; i >= 0; i--) {
-		// 	if (loads[i] != undefined) {
-		// 		var param0 = 'LOAD_NODE_' + axes[i];
-		// 		gTpd[param0] += (gTpd[param0] == undefined ? '' : ';') + stitch(nodes, ';');
-		// 		var param1 = 'LOAD_VALU_' + axes[i];
-		// 		gTpd[param1] += (gTpd[param1] == undefined ? '' : ';') + (loads[i] + '@' + nodes.length);
-		// 	}
-		// }
-
 		dlgBoundLoad.dialog('close');
+	});
+
+	dlgBoundLoad.on('dialogclose', function(e) {
+		for (var i = gSelVoxels.length - 1; i >= 0; i--) {
+			var voxel = gSelVoxels[i];
+			if (!voxel.isBoundary && !voxel.isLoad) {
+				setHighlight(voxel.mesh, false);
+			}
+		}
 	});
 
 	//
