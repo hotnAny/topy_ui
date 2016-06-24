@@ -106,9 +106,9 @@ var initPanel = function() {
 	dlgVoxelSpec.dialog({
 		autoOpen: false,
 		maxWidth: 280,
-		maxHeight: 160,
+		maxHeight: 200,
 		width: 280,
-		height: 160,
+		height: 200,
 		show: {
 			effect: "fade",
 			duration: 500
@@ -163,6 +163,13 @@ var initPanel = function() {
 			if (!voxel.isBoundary && !voxel.isLoad) {
 				setHighlight(voxel.mesh, false);
 			}
+		}
+
+		// go thru the selected voxels again to add visuals
+		for (var i = gSelVoxels.length - 1; i >= 0; i--) {
+			var voxel = gSelVoxels[i];
+			var vload = new THREE.Vector3().fromArray(voxel.loadAsArray);
+			addAnArrow(voxel.mesh.position, vload.clone().normalize(), Math.max(vload.length(), 25));
 		}
 
 		updateSpecialVoxels();

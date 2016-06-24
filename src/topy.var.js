@@ -65,6 +65,15 @@ class Voxel {
 		return this._loads;
 	}
 
+	get loadAsArray() {
+		var arrLoads = [];
+		for (var j = 0; j < gAxes.length; j++) {
+			var value = this._loads[gAxes[j]];
+			arrLoads.push(value == undefined ? 0 : value);
+		}
+		return arrLoads;
+	}
+
 	get isBoundary() {
 		return this._isBoundary;
 	}

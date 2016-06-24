@@ -142,3 +142,26 @@ function stitch(array, sep) {
 	}
 	return str;
 }
+
+function addAnArrow(v1, dir, len) {
+	var flipped = len < 0;
+
+	// NOW: make an arrow
+	var rArrow = 1.5;
+	var lArrow = len == undefined ? 100 : Math.abs(len);
+	var bodyArrow = new xacCylinder(rArrow, lArrow, MATERIALFOCUS).m;
+
+	var rArrowHead = rArrow * 5;
+	var headArrow = new xacCylinder([0, rArrowHead], rArrowHead * 2, MATERIALFOCUS).m;
+	headArrow.position.add(new THREE.Vector3(0, 1, 0).multiplyScalar(lArrow * 0.5 + rArrowHead));
+
+	var arrow = new THREE.Object3D();
+	arrow.add(bodyArrow);
+	arrow.add(headArrow);
+
+	rotateObjTo(arrow, dir.clone().normalize().multiplyScalar(flipped == true ? -1 : 1));
+	arrow.position.copy(v1.clone().add(dir.clone().normalize().multiplyScalar(lArrow * 0.5 + (flipped == true ? rArrowHead * 2 : 0))));
+
+	scene.add(arrow);
+	return arrow;
+}
