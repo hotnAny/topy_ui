@@ -45,6 +45,12 @@ var matLoad = new THREE.MeshBasicMaterial({
      opacity: 0.75
 });
 
+var MATERIALFOCUS = new THREE.MeshPhongMaterial({
+     color: 0xE82C0C,
+     transparent: true,
+     opacity: 1.0
+});
+
 //
 // rendering and viewport
 //
