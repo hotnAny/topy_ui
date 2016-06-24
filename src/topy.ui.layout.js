@@ -64,15 +64,15 @@ panel.append(tblAxes);
 
 //
 //
-//	dialog for specifying boundary and load
+//	dialog for specifying boundary, load, and others
 //
 //
-var dlgBoundLoad = $('<div></div>');
-dlgBoundLoad.title = 'Boundary and Load';
-dlgBoundLoad.append('');
+var dlgVoxelSpec = $('<div></div>');
+dlgVoxelSpec.title = 'Boundary and Load';
+dlgVoxelSpec.append('');
 
-var tblBoundLoad = $('<table class="ui-widget" cellspacing="2" cellpadding="2"></table>');
-dlgBoundLoad.append(tblBoundLoad);
+var tblVoxelSpec = $('<table class="ui-widget" cellspacing="2" cellpadding="2"></table>');
+dlgVoxelSpec.append(tblVoxelSpec);
 
 var trBound = $('<tr></tr>');
 trBound.append($('<td>Boundary: </td>'));
@@ -80,7 +80,7 @@ for (var i = axes.length - 1; i >= 0; i--) {
 	trBound.append($('<td style="padding: 5px">' + axes[i] + '</td>'));
 	trBound.append($('<td style="padding: 5px"><input type="checkbox" id="cb' + axes[i] + '"></td>'));
 }
-tblBoundLoad.append(trBound);
+tblVoxelSpec.append(trBound);
 
 var trLoad = $('<tr></tr>');
 trLoad.append($('<td>Load: </td>'));
@@ -88,14 +88,26 @@ for (var i = axes.length - 1; i >= 0; i--) {
 	trLoad.append($('<td style="padding: 5px">' + axes[i] + '</td>'));
 	trLoad.append($('<td style="padding: 5px"><input type="text" id="load' + axes[i] + '" size="3"></td>'));
 }
-tblBoundLoad.append(trLoad);
+tblVoxelSpec.append(trLoad);
 
-dlgBoundLoad.append($('<br>'));
+// dlgVoxelSpec.append($('<br>'));
+
+var tblFixRemove = $('<table class="ui-widget" cellspacing="2" cellpadding="2"></table>');
+dlgVoxelSpec.append(tblFixRemove);
+
+var trFixRemove = $('<tr></tr>');
+trFixRemove.append($('<td style="padding: 5px">Fix </td>'));
+trFixRemove.append($('<td style="padding: 5px"><input type="checkbox" id="cbFixed"></td>'));
+trFixRemove.append($('<td style="padding: 5px">Remove </td>'));
+trFixRemove.append($('<td style="padding: 5px"><input type="checkbox" id="cbRemoved"></td>'));
+tblFixRemove.append(trFixRemove);
+
+dlgVoxelSpec.append($('<br>'));
 
 var btnOk = $('<div style="float: right;">OK</div>');
-dlgBoundLoad.append(btnOk);
+dlgVoxelSpec.append(btnOk);
 
-$(document.body).append(dlgBoundLoad);
+$(document.body).append(dlgVoxelSpec);
 
 //
 //	finish-up buttons

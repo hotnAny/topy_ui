@@ -103,7 +103,7 @@ var initPanel = function() {
 	//
 	// prompt for specifying load/boundary
 	//
-	dlgBoundLoad.dialog({
+	dlgVoxelSpec.dialog({
 		autoOpen: false,
 		maxWidth: 280,
 		maxHeight: 160,
@@ -152,6 +152,13 @@ var initPanel = function() {
 				} catch (e) {}
 			}
 
+			// check if it is fixed or removed voxels
+			if ($('#cbFixed').is(':checked')) {
+				gFixedVoxels.push(voxel);
+			} else if ($('#cbRemoved').is(':checked')) {
+				gRemovedVoxels.push(voxel);
+			}
+
 			// if it is none of anything, remove it
 			if (!voxel.isBoundary && !voxel.isLoad) {
 				setHighlight(voxel.mesh, false);
@@ -160,10 +167,18 @@ var initPanel = function() {
 
 		updateSpecialVoxels();
 
-		dlgBoundLoad.dialog('close');
+		dlgVoxelSpec.dialog('close');
 	});
 
-	dlgBoundLoad.on('dialogclose', function(e) {
+	$('#cbFixed').change(function() {
+		$('#cbRemoved').attr('checked', !this.checked)
+	});
+
+	$('#cbRemoved').change(function() {
+		$('#cbFixed').attr('checked', !this.checked)
+	});
+
+	dlgVoxelSpec.on('dialogclose', function(e) {
 		for (var i = gSelVoxels.length - 1; i >= 0; i--) {
 			var voxel = gSelVoxels[i];
 			if (!voxel.isBoundary && !voxel.isLoad) {
@@ -182,7 +197,7 @@ var initPanel = function() {
 	btnRun.button();
 	btnRun.click(function(e) {
 		// callTopy();
-		dlgBoundLoad.dialog('open');
+		dlgVoxelSpec.dialog('open');
 	});
 }
 
@@ -191,6 +206,8 @@ function updateSpecialVoxels() {
 	var fxtrNodes = new Array();
 	var loadNodes = new Array();
 	var loadValues = new Array();
+	var fixedNodes = [];
+	var removedNodes = [];
 
 	for (var i = gAxes.length - 1; i >= 0; i--) {
 		fxtrNodes[gAxes[i]] = [];
@@ -219,23 +236,37 @@ function updateSpecialVoxels() {
 		}
 	}
 
-	// update the tpd object/file
-	for (var i = gAxes.length - 1; i >= 0; i--) {
-		var nodesFxtr = fxtrNodes[gAxes[i]];
-		var paramFxtr = 'FXTR_NODE_' + gAxes[i];
-		gTpd[paramFxtr] = stitch(nodesFxtr, ';');
-
-		var nodesLoad = loadNodes[gAxes[i]];
-		var paramLoadNode = 'LOAD_NODE_' + gAxes[i];
-		gTpd[paramLoadNode] = stitch(nodesLoad, ';');
-
-		var valuesLoad = loadValues[gAxes[i]];
-		var paramLoadValue = 'LOAD_VALU_' + gAxes[i];
-		gTpd[paramLoadValue] = stitch(valuesLoad, ';');
+	for (var i = gFixedVoxels.length - 1; i >= 0; i--) {
+		var voxel = gFixedVoxels[i];
+		var nodes = compactElm2Nodes(voxel.index);
+		fixedNodes = fixedNodes.concat(nodes);
 	}
 
-	updateTpdText(gTpd);
+	for (var i = gRemovedVoxels.length - 1; i >= 0; i--) {
+		var voxel = gRemovedVoxels[i];
+		var nodes = compactElm2Nodes(voxel.index);
+		removedNodes = removedNodes.concat(nodes);
+	}
 
+	// update the tpd object/file
+	for (var i = gAxes.length - 1; i >= 0; i--) {
+		// var fxtrs = fxtrNodes[gAxes[i]];
+		// var paramFxtr = 'FXTR_NODE_' + gAxes[i];
+		gTpd['FXTR_NODE_' + gAxes[i]] = stitch(fxtrNodes[gAxes[i]], ';');
+
+		// var loads = loadNodes[gAxes[i]];
+		// var paramLoadNode = 'LOAD_NODE_' + gAxes[i];
+		gTpd['LOAD_NODE_' + gAxes[i]] = stitch(loadNodes[gAxes[i]], ';');
+
+		// var values = loadValues[gAxes[i]];
+		// var paramLoadValue = 'LOAD_VALU_' + gAxes[i];
+		gTpd['LOAD_VALU_' + gAxes[i]] = stitch(loadValues[gAxes[i]], ';');
+	}
+
+	gTpd['ACTV_ELEM'] = stitch(fixedNodes, ';');
+	gTpd['PASV_ELEM'] = stitch(removedNodes, ';');
+
+	updateTpdText(gTpd);
 }
 
 //

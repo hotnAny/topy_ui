@@ -20,7 +20,7 @@ document.addEventListener('mousemove', onMouseMove, false);
 document.addEventListener('mouseup', onMouseUp, false);
 
 function onMouseDown(e) {
-	if (e.which != LEFTMOUSE || dlgBoundLoad.dialog('isOpen') == true) {
+	if (e.which != LEFTMOUSE || dlgVoxelSpec.dialog('isOpen') == true) {
 		return;
 	}
 
@@ -32,7 +32,7 @@ function onMouseDown(e) {
 }
 
 function onMouseMove(e) {
-	if(dlgBoundLoad.dialog('isOpen') == true) {
+	if(dlgVoxelSpec.dialog('isOpen') == true) {
 		return;
 	}
 	
@@ -56,7 +56,7 @@ function onMouseMove(e) {
 function onMouseUp(e) {
 	if (gMouseDown) {
 		if (gSelectionMode == SELECTION) { // if it's a selection operation
-			dlgBoundLoad.dialog('open');
+			dlgVoxelSpec.dialog('open');
 		} else {
 			updateSpecialVoxels()
 		}
@@ -146,7 +146,6 @@ function setHighlight(mesh, alwaysHighlight) {
 		mesh.highlighted = false;
 		return false;
 	}
-
 }
 
 //

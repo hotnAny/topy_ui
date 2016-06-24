@@ -9,7 +9,7 @@ function updateVoxels(nElms) {
 	var ny = nElms[1];
 	var nz = nElms[2];
 
-	if (nx <= 1 || ny <= 1 || nz <= 1) {
+	if (nx < 1 || ny < 1 || nz < 1) {
 		return false;
 	}
 

@@ -81,6 +81,9 @@ var gMouseDown = false;
 
 var gVoxelsBoundary = []; // permanently buffer for selected voxels
 var gVoxelsLoad = [];
+var gFixedVoxels = [];
+var gRemovedVoxels = [];
+
 var gSelVoxels = []; // temporary buffer for selected voxels
 var gVoxelPrev; // last encountered voxel
 var gIsSpecified;
